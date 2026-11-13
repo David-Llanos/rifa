@@ -1,0 +1,19 @@
+{
+  "app.title": "Raffle Platform",
+  "app.description": "Create and join raffles tied to official lottery draws.",
+  "home.heading": "Raffle Platform",
+  "home.tagline": "Create and join raffles tied to official lottery draws.",
+  "locale.label": "Language",
+  "locale.en": "English",
+  "locale.es": "Español",
+  "locale.saveFailed": "Your language preference was not saved.",
+  "locale.retry": "Retry",
+  "locale.saved": "Language preference saved.",
+  "common.loading": "Loading…",
+  "common.retry": "Retry",
+  "common.cancel": "Cancel",
+  "common.save": "Save",
+  "common.close": "Close",
+  "validation.required": "{field} is required.",
+  "validation.tooLong": "{field} must be at most {max} characters."
+}

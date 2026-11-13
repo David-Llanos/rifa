@@ -1,0 +1,19 @@
+{
+  "app.title": "Plataforma de Rifas",
+  "app.description": "Crea y participa en rifas vinculadas a sorteos oficiales de lotería.",
+  "home.heading": "Plataforma de Rifas",
+  "home.tagline": "Crea y participa en rifas vinculadas a sorteos oficiales de lotería.",
+  "locale.label": "Idioma",
+  "locale.en": "English",
+  "locale.es": "Español",
+  "locale.saveFailed": "No se guardó tu preferencia de idioma.",
+  "locale.retry": "Reintentar",
+  "locale.saved": "Preferencia de idioma guardada.",
+  "common.loading": "Cargando…",
+  "common.retry": "Reintentar",
+  "common.cancel": "Cancelar",
+  "common.save": "Guardar",
+  "common.close": "Cerrar",
+  "validation.required": "{field} es obligatorio.",
+  "validation.tooLong": "{field} debe tener como máximo {max} caracteres."
+}

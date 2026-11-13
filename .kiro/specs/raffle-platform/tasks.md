@@ -255,7 +255,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Validates: Requirements 19.11, 19.12**
 
 - [ ] 9. Notification service
-  - [~] 9.1 Implement notification core functions
+  - [x] 9.1 Implement notification core functions
     - `resolveLocale`, `channelsFor` (mandatory versus optional), `parseTemplate` and `renderTemplate` with the five allowed placeholders, `smsSegments` (GSM-7 and UCS-2), `isStopKeyword`, `deliveryPlan`, `winnerMessage` per role
     - _Requirements: 10.2, 10.3, 10.4, 10.6, 10.7, 10.8, 10.9, 11.3, 11.5, 11.6, 11.8, 11.10_
 
@@ -293,7 +293,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 11. Compliance, KYC, fraud, and security
-  - [~] 11.1 Implement the compliance rule engine
+  - [x] 11.1 Implement the compliance rule engine
     - Versioned rule sets with snapshot reference per raffle, `evaluateRules` naming each violated rule and configured value, `validateEvidenceFile` (10 MB, PDF, JPG, PNG)
     - Colombia and US-state evidence requirements, purchase location gating, pending_review queueing within 5 seconds, jurisdiction enablement for new raffles only, required Share_Page disclosures
     - Tax and reporting document generation within 60 seconds with 3 retries at 5-minute intervals
@@ -391,7 +391,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Validates: Requirements 23.3, 23.4, 23.13, 23.14**
 
 - [ ] 13. PWA client
-  - [~] 13.1 Implement the Next.js app shell, localization, and formatting
+  - [x] 13.1 Implement the Next.js app shell, localization, and formatting
     - English and Spanish JSON resource files, key parity CI check, `detectLocale`, locale switch within 1 second preserving form input, profile persistence with retry on failure, English fallback with once-per-key logging
     - `formatMoney` using the raffle currency, bilingual raffle content selection with fallback
     - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.7, 20.8, 20.9, 20.10_
