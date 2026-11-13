@@ -51,7 +51,9 @@ describe("validateRegistration", () => {
     expect(validateRegistration({ ...valid, password: "a".repeat(11) }, NOW, false)).not.toBeNull();
     expect(validateRegistration({ ...valid, password: "a".repeat(12) }, NOW, false)).toBeNull();
     expect(validateRegistration({ ...valid, password: "a".repeat(128) }, NOW, false)).toBeNull();
-    expect(validateRegistration({ ...valid, password: "a".repeat(129) }, NOW, false)).not.toBeNull();
+    expect(
+      validateRegistration({ ...valid, password: "a".repeat(129) }, NOW, false),
+    ).not.toBeNull();
   });
   it("reports a taken email exactly like a malformed one", () => {
     const taken = validateRegistration(valid, NOW, true);
@@ -59,7 +61,11 @@ describe("validateRegistration", () => {
     expect(taken).toEqual(malformed);
   });
   it("rejects under-18 and missing consent", () => {
-    const young = validateRegistration({ ...valid, dob: new Date("2007-06-16T00:00:00Z") }, NOW, false);
+    const young = validateRegistration(
+      { ...valid, dob: new Date("2007-06-16T00:00:00Z") },
+      NOW,
+      false,
+    );
     expect(young).toEqual([{ field: "dob", constraint: "minAge", params: { min: 18 } }]);
     const noConsent = validateRegistration({ ...valid, policyAccepted: false }, NOW, false);
     expect(noConsent?.map((e) => e.field)).toEqual(["consent"]);
@@ -108,7 +114,9 @@ describe("register", () => {
   it("creates no account without acceptance or when under age", async () => {
     const a = makeDeps();
     expect((await register(a.deps, { ...valid, policyAccepted: false })).ok).toBe(false);
-    expect((await register(a.deps, { ...valid, dob: new Date("2015-01-01T00:00:00Z") })).ok).toBe(false);
+    expect((await register(a.deps, { ...valid, dob: new Date("2015-01-01T00:00:00Z") })).ok).toBe(
+      false,
+    );
     expect(a.created).toHaveLength(0);
   });
   it("creates no account for a taken email", async () => {

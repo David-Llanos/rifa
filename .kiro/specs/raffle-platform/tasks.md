@@ -63,14 +63,14 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 48: Audit failure aborts the operation**
     - **Validates: Requirements 18.9**
 
-- [ ] 3. Accounts and authentication
+- [x] 3. Accounts and authentication
   - [x] 3.1 Implement registration, consent, and age validation
     - `validateRegistration` (email up to 254 characters, E.164 phone, password 12 to 128, generic duplicate handling), `ageOn`, minimum age 18
     - Record policy and terms acceptance with version, user, UTC timestamp; reject registration without acceptance
     - Email verification message within 60 seconds
     - _Requirements: 1.1, 1.2, 13.4, 13.5, 23.3, 23.4_
 
-  - [~] 3.2 Implement sign-in, lockout, MFA, and password reset
+  - [x] 3.2 Implement sign-in, lockout, MFA, and password reset
     - Argon2id hashing, generic credential errors, unverified-email handling, `nextLockState` (5 failures in 15 minutes, 15-minute lock, lock email)
     - MFA with 6-digit code (SMS or TOTP, 5 attempts), mandatory for Owners and Admins, single-use reset links expiring in 60 minutes
     - httpOnly, secure, SameSite session cookies
@@ -107,7 +107,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 5: Locked fields after first sale**
     - **Validates: Requirements 2.10, 2.11**
 
-  - [~] 4.4 Implement the raffle state machine, closure decision, and cancellation
+  - [x] 4.4 Implement the raffle state machine, closure decision, and cancellation
     - `transition`, `closureDecision`, publication submission (pending_review then published), cancellation with Admin approval and documented reason
     - Scheduled jobs for deadline closure, threshold evaluation, 24-hour reminder, with retry and owner notification on failure
     - Time zone handling for deadlines
@@ -127,7 +127,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - _Requirements: 9.1, 9.4, 9.5_
 
 - [ ] 5. Inventory service
-  - [~] 5.1 Implement reservation, random assignment, release, and counts
+  - [x] 5.1 Implement reservation, random assignment, release, and counts
     - All-or-nothing SQL reservation with conditional UPDATE, per-player limit check, sales-closed and cancelled rejection, max 100 tickets per checkout
     - `pickRandomAvailable`, `releaseExpired`, `counts`, ticket cancellation on raffle cancellation
     - _Requirements: 4.1, 4.2, 4.4, 5.1, 5.2, 5.3, 5.4, 5.6, 7.3, 8.6, 25.3, 25.7_
@@ -178,7 +178,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Payment service
-  - [~] 7.1 Implement provider adapter interfaces and core payment functions
+  - [x] 7.1 Implement provider adapter interfaces and core payment functions
     - `PaymentProviderAdapter` interface (hosted fields or redirects only), `methodsFor(country)`, `orderTotal`, idempotency store with 24-hour window and required key
     - Payment record with amount, currency, provider, reference, status; Colombia and US method lists; no-provider handling
     - _Requirements: 3.2, 3.4, 6.1, 6.2, 6.3, 6.4, 6.7, 6.9_
@@ -320,7 +320,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 35: KYC retry limit**
     - **Validates: Requirements 13.2**
 
-  - [~] 11.7 Implement the fraud service
+  - [x] 11.7 Implement the fraud service
     - `decide` with block and review thresholds and error handling, `rateLimit` (10 per 60 seconds with retry-after), risk score within 2 seconds, order review queue, raffle fraud suspension within 60 seconds, high-risk owner approval
     - Integrate with the payment flow
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.9_

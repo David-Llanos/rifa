@@ -1,5 +1,14 @@
 {
-  "pbtResults": {},
+  "pbtResults": {
+    "3.4 Write property test for lockout after repeated failures": {
+      "status": "passed",
+      "lastRunTimestamp": 1794613039259
+    },
+    "3.5 Write property test for password hashing round trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1794613047954
+    }
+  },
   "executionHistory": {
     "1.1 Scaffold the project and shared types": [
       {
@@ -108,6 +117,16 @@
         "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
         "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
         "timestamp": 1794609741873
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794612283705
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794613098117
       }
     ],
     "4.1 Implement raffle validation and draft persistence": [
@@ -132,6 +151,16 @@
         "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
         "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
         "timestamp": 1794609742283
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794612284099
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794613102711
       }
     ],
     "4.7 Implement the External_Lottery catalog and Winning_Rule selection": [
@@ -146,6 +175,16 @@
         "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
         "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
         "timestamp": 1794609742583
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794612284492
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794613104165
       }
     ],
     "5.6 Implement idempotent payment confirmation and reservation expiry": [
@@ -174,6 +213,16 @@
         "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
         "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
         "timestamp": 1794609743189
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794612284768
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794613105219
       }
     ],
     "7.4 Implement Creation_Fee and Customization_Fee payments": [
@@ -288,6 +337,16 @@
         "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
         "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
         "timestamp": 1794609745111
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794612285006
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794613106920
       }
     ],
     "11.10 Implement security middleware": [
@@ -403,6 +462,13 @@
         "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
         "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
         "timestamp": 1794611518943
+      }
+    ],
+    "3. Accounts and authentication": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794613100612
       }
     ]
   }

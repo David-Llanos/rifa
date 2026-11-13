@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@node-rs/argon2": "2.2.2",
     "@raffle/shared": "0.1.0"
   }
 }
