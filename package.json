@@ -1,0 +1,33 @@
+{
+  "name": "raffle-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bilingual (en/es) raffle platform PWA",
+  "type": "module",
+  "workspaces": [
+    "packages/shared",
+    "packages/backend",
+    "packages/client"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build -w @raffle/shared && npm run build -w @raffle/backend && npm run build -w @raffle/client",
+    "typecheck": "tsc -p packages/shared/tsconfig.json --noEmit && tsc -p packages/backend/tsconfig.json --noEmit",
+    "test": "vitest --run",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/node": "20.17.10",
+    "eslint": "9.39.5",
+    "fast-check": "3.23.1",
+    "prettier": "3.4.2",
+    "typescript": "5.7.2",
+    "typescript-eslint": "8.72.2",
+    "vitest": "2.1.8"
+  }
+}

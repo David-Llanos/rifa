@@ -1,0 +1,7 @@
+node_modules
+dist
+.next
+coverage
+package-lock.json
+.kiro
+next-env.d.ts

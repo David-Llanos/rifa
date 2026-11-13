@@ -1,0 +1,295 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Scaffold the project and shared types": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609740116
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609751944
+      },
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794610648619
+      }
+    ],
+    "1.2 Create the PostgreSQL schema and migrations": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609740613
+      }
+    ],
+    "1.3 Implement money, countdown, and time zone utilities": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609740947
+      }
+    ],
+    "1.6 Implement the durable job scheduler and retry policy": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609741311
+      }
+    ],
+    "2.1 Implement the hash-chained audit service": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609741483
+      }
+    ],
+    "3.1 Implement registration, consent, and age validation": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609741648
+      }
+    ],
+    "3.2 Implement sign-in, lockout, MFA, and password reset": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609741873
+      }
+    ],
+    "4.1 Implement raffle validation and draft persistence": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609742119
+      }
+    ],
+    "4.4 Implement the raffle state machine, closure decision, and cancellation": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609742283
+      }
+    ],
+    "4.7 Implement the External_Lottery catalog and Winning_Rule selection": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609742441
+      }
+    ],
+    "5.1 Implement reservation, random assignment, release, and counts": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609742583
+      }
+    ],
+    "5.6 Implement idempotent payment confirmation and reservation expiry": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609742745
+      }
+    ],
+    "5.10 Implement realtime counts, ticket list, and CSV export": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609742892
+      }
+    ],
+    "6. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609743043
+      }
+    ],
+    "7.1 Implement provider adapter interfaces and core payment functions": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609743189
+      }
+    ],
+    "7.4 Implement Creation_Fee and Customization_Fee payments": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609743332
+      }
+    ],
+    "7.6 Implement refund planning, cap, and retry state machine": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609743494
+      }
+    ],
+    "7.9 Implement purchase flow, webhooks, and late-payment refunds": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609743636
+      }
+    ],
+    "7.10 Implement the payout ledger and release": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609743784
+      }
+    ],
+    "8.1 Implement winning number derivation and winner resolution": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609743951
+      }
+    ],
+    "8.4 Implement result retrieval, postponements, and manual results": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609744128
+      }
+    ],
+    "9.1 Implement notification core functions": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609744281
+      }
+    ],
+    "9.8 Implement notification workers, adapters, and winner notification flow": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609744439
+      }
+    ],
+    "10. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609744589
+      }
+    ],
+    "11.1 Implement the compliance rule engine": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609744744
+      }
+    ],
+    "11.5 Implement KYC integration": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609744931
+      }
+    ],
+    "11.7 Implement the fraud service": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609745111
+      }
+    ],
+    "11.10 Implement security middleware": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609745262
+      }
+    ],
+    "12.1 Implement Back_Office roles, approvals, and configuration": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609745434
+      }
+    ],
+    "12.4 Implement support cases, disputes, and delivery tracking": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609745616
+      }
+    ],
+    "12.5 Implement the Analytics_Dashboard backend": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609745916
+      }
+    ],
+    "12.8 Implement the Share_Page backend, token, QR, and metadata": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609746200
+      }
+    ],
+    "12.11 Implement privacy and data protection features": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609746374
+      }
+    ],
+    "13.1 Implement the Next.js app shell, localization, and formatting": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609746549
+      }
+    ],
+    "13.4 Implement PWA capabilities": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609746715
+      }
+    ],
+    "13.5 Implement owner and player flows with accessible ticket selection": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609746934
+      }
+    ],
+    "13.6 Implement theme contrast validation and custom theme support": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609747165
+      }
+    ],
+    "13.8 Implement Share_Page, analytics, notification editor, and back office screens": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609747410
+      }
+    ],
+    "14.1 Wire modules end to end": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609747688
+      }
+    ],
+    "15. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "d567ebaa-7a63-4ac4-8881-27437f07238d",
+        "chatSessionId": "sess_15e7ca23-86b0-4ddf-861c-24e7a35bb7ee",
+        "timestamp": 1794609747946
+      }
+    ]
+  }
+}
