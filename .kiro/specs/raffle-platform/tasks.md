@@ -6,7 +6,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
 
 ## Tasks
 
-- [ ] 1. Foundations: project, schema, utilities, scheduler
+- [x] 1. Foundations: project, schema, utilities, scheduler
   - [x] 1.1 Scaffold the project and shared types
     - Create the TypeScript workspace (backend modules, Next.js client, shared package), Vitest, fast-check, lint and format config
     - Define shared types: `Money` (bigint minor units plus currency), `Locale`, `Country`, `Result<T,E>`, `FieldError`, clock and RNG interfaces for injection
@@ -31,7 +31,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 19: Time zone round trip**
     - **Validates: Requirements 7.10**
 
-  - [~] 1.6 Implement the durable job scheduler and retry policy
+  - [x] 1.6 Implement the durable job scheduler and retry policy
     - Job queue on PostgreSQL with unique keys `(job_type, entity_id, occurrence)`, resume after restart
     - Retry with exponential backoff, 3 attempts, preserved queue entry, Admin alert after the third failure
     - _Requirements: 7.11, 7.12, 25.5, 25.6_
@@ -44,8 +44,8 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 55: Retry with exponential backoff**
     - **Validates: Requirements 7.12, 25.5**
 
-- [ ] 2. Audit service
-  - [~] 2.1 Implement the hash-chained audit service
+- [x] 2. Audit service
+  - [x] 2.1 Implement the hash-chained audit service
     - `append(tx, event)` inside the caller's transaction (fail closed), `eventHash`, `verifyChain`, `search` (timestamp descending)
     - Revoke UPDATE and DELETE, add trigger that rejects changes and records the rejected attempt through a privileged path
     - Retention of at least 7 years in storage policy
@@ -64,7 +64,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Validates: Requirements 18.9**
 
 - [ ] 3. Accounts and authentication
-  - [~] 3.1 Implement registration, consent, and age validation
+  - [x] 3.1 Implement registration, consent, and age validation
     - `validateRegistration` (email up to 254 characters, E.164 phone, password 12 to 128, generic duplicate handling), `ageOn`, minimum age 18
     - Record policy and terms acceptance with version, user, UTC timestamp; reject registration without acceptance
     - Email verification message within 60 seconds
@@ -93,7 +93,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Validates: Requirements 13.4, 13.5**
 
 - [ ] 4. Raffle service
-  - [~] 4.1 Implement raffle validation and draft persistence
+  - [x] 4.1 Implement raffle validation and draft persistence
     - `validateRaffle`, `validateEdit` (locked fields after first sold ticket), `validateDrawTime`
     - Bounds: title, description, images, prize value, tickets 10 to 100,000, currency per country, deadline plus 24 hours, threshold, per-player limit
     - Bilingual title and description fields; `saveDraft` with audit events
@@ -233,7 +233,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Validates: Requirements 14.2, 14.3, 14.4**
 
 - [ ] 8. Draw service
-  - [~] 8.1 Implement winning number derivation and winner resolution
+  - [x] 8.1 Implement winning number derivation and winner resolution
     - `deriveWinningNumber` per Winning_Rule, `resolveWinner` with lower, higher and redraw fallbacks, none outcome
     - _Requirements: 9.7, 9.8, 9.9, 9.10_
 
