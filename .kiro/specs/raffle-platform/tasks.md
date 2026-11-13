@@ -12,12 +12,12 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - Define shared types: `Money` (bigint minor units plus currency), `Locale`, `Country`, `Result<T,E>`, `FieldError`, clock and RNG interfaces for injection
     - _Requirements: 2.5, 20.5, 25.6_
 
-  - [~] 1.2 Create the PostgreSQL schema and migrations
+  - [x] 1.2 Create the PostgreSQL schema and migrations
     - Tables: user, raffle, ticket (unique `(raffle_id, number)`, status check constraint), order, payment (unique `(provider, provider_reference)`), refund, draw, payout, audit_event, notification, ruleset_version, kyc_record, support_case, job
     - Money columns as bigint minor units; no card data columns
     - _Requirements: 4.1, 4.2, 5.9, 6.3, 6.9, 18.3, 25.3_
 
-  - [~] 1.3 Implement money, countdown, and time zone utilities
+  - [x] 1.3 Implement money, countdown, and time zone utilities
     - Exact decimal money math and rounding to 2 decimals
     - `formatCountdown` and `parseCountdown` (minutes:seconds and d/h/m/s)
     - Jurisdiction-local to UTC to viewer-zone conversion with zone name or offset display
