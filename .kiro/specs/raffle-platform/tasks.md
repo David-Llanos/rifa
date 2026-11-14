@@ -92,7 +92,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 34: Age verification**
     - **Validates: Requirements 13.4, 13.5**
 
-- [ ] 4. Raffle service
+- [x] 4. Raffle service
   - [x] 4.1 Implement raffle validation and draft persistence
     - `validateRaffle`, `validateEdit` (locked fields after first sold ticket), `validateDrawTime`
     - Bounds: title, description, images, prize value, tickets 10 to 100,000, currency per country, deadline plus 24 hours, threshold, per-player limit
@@ -121,7 +121,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 18: Sales closure decision**
     - **Validates: Requirements 7.2, 7.3, 7.5, 7.6, 7.8, 7.9**
 
-  - [~] 4.7 Implement the External_Lottery catalog and Winning_Rule selection
+  - [x] 4.7 Implement the External_Lottery catalog and Winning_Rule selection
     - Catalog per country with draw schedule and result format, closed set of Winning_Rules, fallback rule selection
     - Expose rule, fallback and draw time for the Share_Page
     - _Requirements: 9.1, 9.4, 9.5_
@@ -311,7 +311,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 33: Purchase location gating**
     - **Validates: Requirements 12.7**
 
-  - [~] 11.5 Implement KYC integration
+  - [x] 11.5 Implement KYC integration
     - KYC provider adapter with 30-second timeout, owner KYC before publication, `kycAttemptAllowed` (3 per 24 hours), winner verification above a configurable prize threshold with 30-day withholding, document-based age verification where required
     - Encrypted KYC document storage with restricted access
     - _Requirements: 13.1, 13.2, 13.3, 13.6, 13.7, 13.8, 13.9_
@@ -338,7 +338,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - _Requirements: 15.7, 15.8_
 
 - [ ] 12. Back office, support, analytics, share page, privacy
-  - [~] 12.1 Implement Back_Office roles, approvals, and configuration
+  - [x] 12.1 Implement Back_Office roles, approvals, and configuration
     - Admin MFA gate, `can(roles, action)` for Support, Compliance, Finance and Super Admin, reason validation, raffle approve and reject, suspend and reinstate, Finance retries, Super Admin configuration with change records
     - Review and report queues, raffle report submission within 5 seconds
     - _Requirements: 15.10, 15.11, 19.1, 19.2, 19.3, 19.4, 19.5, 19.6, 19.7, 19.8, 19.9, 19.10_
@@ -404,7 +404,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 52: Currency formatting**
     - **Validates: Requirements 20.5**
 
-  - [~] 13.4 Implement PWA capabilities
+  - [x] 13.4 Implement PWA capabilities
     - Web app manifest, Workbox service worker with 7-day Raffle page cache, offline notices and fallback page, purchase blocking offline with selections preserved, stale-counts indicator within 10 seconds, update prompt and refresh, web push permission handling
     - Responsive layouts from 320 px to 1920 px
     - _Requirements: 4.8, 21.1, 21.2, 21.3, 21.4, 21.5, 21.6, 21.7, 21.9, 21.10_

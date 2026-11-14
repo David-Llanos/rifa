@@ -14,6 +14,16 @@
   "common.cancel": "Cancel",
   "common.save": "Save",
   "common.close": "Close",
+  "pwa.offline.banner": "You are offline. Purchases require a connection.",
+  "pwa.offline.purchaseBlocked": "A connection is required to buy tickets. Your selection has been kept.",
+  "pwa.staleCounts": "Ticket counts may be outdated.",
+  "pwa.update.message": "A new version is available.",
+  "pwa.update.refresh": "Refresh",
+  "pwa.push.enable": "Enable push notifications",
+  "pwa.push.disable": "Disable push notifications",
+  "pwa.push.denied": "Push notifications are blocked. You will still receive email and SMS.",
+  "pwa.push.unsupported": "Push notifications are not supported on this device.",
+  "pwa.push.error": "Push notification settings could not be updated. Try again.",
   "validation.required": "{field} is required.",
   "validation.tooLong": "{field} must be at most {max} characters."
 }

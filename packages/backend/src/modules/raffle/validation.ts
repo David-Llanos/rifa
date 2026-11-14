@@ -1,5 +1,6 @@
 import { COUNTRY_CURRENCY, fieldError, isCountry, isLocale, isValidTimeZone } from "@raffle/shared";
 import type { FieldError } from "@raffle/shared";
+import { validateLotterySelection } from "./lottery-catalog.js";
 import {
   LOCKED_FIELDS_AFTER_SALE,
   RAFFLE_BOUNDS as B,
@@ -7,8 +8,6 @@ import {
   type Raffle,
   type RaffleInput,
 } from "./types.js";
-
-const FALLBACKS = ["lower", "higher", "redraw"];
 
 const len = (s: string): number => [...s].length;
 const isValidDate = (d: unknown): d is Date => d instanceof Date && !Number.isNaN(d.getTime());
@@ -81,8 +80,12 @@ export function validateRaffle(input: RaffleInput, now: Date): FieldError[] {
   }
 
   // Total tickets (2.3, 2.4)
-  const totalOk = isInt(input.totalTickets) && input.totalTickets >= B.ticketsMin && input.totalTickets <= B.ticketsMax;
-  if (!totalOk) e.push(fieldError("totalTickets", "range", { min: B.ticketsMin, max: B.ticketsMax }));
+  const totalOk =
+    isInt(input.totalTickets) &&
+    input.totalTickets >= B.ticketsMin &&
+    input.totalTickets <= B.ticketsMax;
+  if (!totalOk)
+    e.push(fieldError("totalTickets", "range", { min: B.ticketsMin, max: B.ticketsMax }));
 
   // Deadline at least now + 24 h (2.7)
   if (!isValidDate(input.deadline)) {
@@ -112,13 +115,16 @@ export function validateRaffle(input: RaffleInput, now: Date): FieldError[] {
     }
   }
 
-  if (typeof input.lotteryId !== "string" || input.lotteryId.trim() === "") {
-    e.push(fieldError("lotteryId", "required"));
-  }
-  if (!input.winningRule || typeof input.winningRule.id !== "string" || input.winningRule.id === "") {
-    e.push(fieldError("winningRule", "required"));
-  }
-  if (!FALLBACKS.includes(input.fallbackRule)) e.push(fieldError("fallbackRule", "invalid"));
+  // External_Lottery catalog, Winning_Rule and fallback (9.1, 9.4)
+  e.push(
+    ...validateLotterySelection({
+      country: input.country,
+      lotteryId: input.lotteryId,
+      totalTickets: totalOk ? input.totalTickets : 0,
+      winningRule: input.winningRule ?? { id: "" },
+      fallbackRule: input.fallbackRule,
+    }),
+  );
 
   const drawErr = validateDrawTime(input.deadline, input.drawAt);
   if (drawErr) e.push(drawErr);

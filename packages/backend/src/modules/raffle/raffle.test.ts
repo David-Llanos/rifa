@@ -29,7 +29,7 @@ function valid(over: Partial<RaffleInput> = {}): RaffleInput {
     tzName: "America/New_York",
     numberSelection: false,
     earlyClosure: false,
-    lotteryId: "lot-1",
+    lotteryId: "us-fl-pick5-evening",
     drawAt: new Date(NOW.getTime() + 48 * H),
     winningRule: { id: "LAST_N_DIGITS_OF_FIRST_PRIZE" },
     fallbackRule: "redraw",
@@ -47,14 +47,18 @@ describe("validateRaffle", () => {
 
   it("rejects ticket counts outside 10..100000 or non-integer with the range", () => {
     for (const n of [9, 100001, 10.5, Number.NaN]) {
-      const e = validateRaffle(valid({ totalTickets: n }), NOW).find((x) => x.field === "totalTickets");
+      const e = validateRaffle(valid({ totalTickets: n }), NOW).find(
+        (x) => x.field === "totalTickets",
+      );
       expect(e?.params).toEqual({ min: 10, max: 100000 });
     }
   });
 
   it("enforces currency per country and positive price", () => {
     expect(fields(valid({ currency: "COP" }))).toContain("currency");
-    expect(fields(valid({ country: "CO", currency: "COP" }))).toEqual([]);
+    expect(
+      fields(valid({ country: "CO", currency: "COP", lotteryId: "co-bogota", totalTickets: 100 })),
+    ).toEqual([]);
     expect(fields(valid({ ticketPriceMinor: 0n }))).toContain("ticketPriceMinor");
   });
 
@@ -87,12 +91,21 @@ describe("validateRaffle", () => {
     const d = valid().deadline;
     expect(validateDrawTime(d, d)?.constraint).toBe("after_deadline");
     expect(validateDrawTime(d, new Date(d.getTime() + 1))).toBeNull();
-    expect(fields(valid({ drawAt: d, totalTickets: 1 }))).toEqual(expect.arrayContaining(["drawAt", "totalTickets"]));
+    expect(fields(valid({ drawAt: d, totalTickets: 1 }))).toEqual(
+      expect.arrayContaining(["drawAt", "totalTickets"]),
+    );
   });
 });
 
 describe("validateEdit", () => {
-  const existing: Raffle = { ...valid(), id: "r1", ownerId: "o1", status: "draft", createdAt: NOW, updatedAt: NOW };
+  const existing: Raffle = {
+    ...valid(),
+    id: "r1",
+    ownerId: "o1",
+    status: "draft",
+    createdAt: NOW,
+    updatedAt: NOW,
+  };
 
   it("allows anything when nothing is sold", () => {
     expect(validateEdit(existing, { ticketPriceMinor: 1n }, 0)).toEqual([]);
@@ -114,7 +127,9 @@ describe("validateEdit", () => {
     expect(errs.map((e) => e.field).sort()).toEqual(
       ["deadline", "lotteryId", "ticketPriceMinor", "totalTickets", "winningRule"].sort(),
     );
-    expect(validateEdit(existing, { ticketPriceMinor: 500n, deadline: new Date(existing.deadline) }, 3)).toEqual([]);
+    expect(
+      validateEdit(existing, { ticketPriceMinor: 500n, deadline: new Date(existing.deadline) }, 3),
+    ).toEqual([]);
   });
 });
 

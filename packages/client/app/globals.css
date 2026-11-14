@@ -1,0 +1,79 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+
+body {
+  padding: 1rem;
+  overflow-wrap: anywhere;
+}
+
+main {
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+img,
+svg,
+video,
+table {
+  max-width: 100%;
+}
+
+button,
+select,
+input {
+  min-height: 44px;
+  max-width: 100%;
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
+.pwa-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0 0 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: #fef3c7;
+  color: #451a03;
+}
+
+.pwa-banner--error {
+  background: #fee2e2;
+  color: #450a0a;
+}
+
+.pwa-banner--update {
+  background: #dbeafe;
+  color: #172554;
+}
+
+.pwa-stale {
+  color: #7c2d12;
+}
+
+@media (min-width: 1920px) {
+  main {
+    max-width: 96rem;
+  }
+}

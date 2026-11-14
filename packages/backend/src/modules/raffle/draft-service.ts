@@ -44,7 +44,10 @@ function show(v: unknown): string | null {
   return String(v);
 }
 
-function diff(before: Partial<RaffleInput> | null, after: RaffleInput): RaffleAuditEvent["changes"] {
+function diff(
+  before: Partial<RaffleInput> | null,
+  after: RaffleInput,
+): RaffleAuditEvent["changes"] {
   const out: RaffleAuditEvent["changes"] = [];
   for (const key of Object.keys(after) as (keyof RaffleInput)[]) {
     const b = before ? show(before[key]) : null;
@@ -107,7 +110,9 @@ export function createRaffleDraftService<Tx>(deps: RaffleDraftDeps<Tx>): RaffleD
         if (existing.status !== "draft") return err([fieldError("raffle", "not_draft")]);
 
         const locked = validateEdit(existing, patch, await repo.soldCount(tx, raffleId));
-        const defined = Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined));
+        const defined = Object.fromEntries(
+          Object.entries(patch).filter(([, v]) => v !== undefined),
+        );
         const merged: Raffle = { ...existing, ...defined, updatedAt: now };
         const errors = [...locked, ...validateRaffle(merged, now)];
         if (errors.length > 0) return err(errors);

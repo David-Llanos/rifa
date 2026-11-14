@@ -37,7 +37,7 @@ function baseInput(over: Partial<RaffleInput> = {}): RaffleInput {
     tzName: "America/New_York",
     numberSelection: false,
     earlyClosure: false,
-    lotteryId: "lot-1",
+    lotteryId: "us-ny-numbers-evening",
     drawAt: new Date(NOW.getTime() + 72 * H),
     winningRule: { id: "LAST_N_DIGITS_OF_FIRST_PRIZE" },
     fallbackRule: "redraw",
