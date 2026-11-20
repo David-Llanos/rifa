@@ -2,6 +2,7 @@ import { err, fieldError, ok, systemClock } from "@raffle/shared";
 import type { Clock, FieldError, Result } from "@raffle/shared";
 import { authorize, validateReason, REASON_MAX } from "./permissions.js";
 import type { AccessError, AdminSession, BackOfficeAction } from "./permissions.js";
+import { isCurrencyAmountsConfig, isCustomizationFeesConfig } from "../payment/fees.js";
 
 export type SubjectKind = "raffle" | "owner" | "player";
 export type SubjectStatus = "active" | "suspended";
@@ -137,9 +138,11 @@ export type ConfigKey = (typeof CONFIG_KEYS)[number];
 export function validateConfigValue(key: ConfigKey, value: unknown): FieldError | null {
   const bad = fieldError("value", "invalid", { key });
   switch (key) {
+    // Per-currency amounts in minor units; customization fees are priced per option (Req 3.1, 3.5).
     case "fee.creation_minor":
+      return isCurrencyAmountsConfig(value) ? null : bad;
     case "fee.customization_minor":
-      return Number.isInteger(value) && (value as number) >= 0 ? null : bad;
+      return isCustomizationFeesConfig(value) ? null : bad;
     case "platform_commission_bps":
       return Number.isInteger(value) && (value as number) >= 0 && (value as number) <= 10_000
         ? null

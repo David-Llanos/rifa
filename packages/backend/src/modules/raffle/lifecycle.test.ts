@@ -113,10 +113,15 @@ interface Harness {
   notices: { kind: OwnerNoticeKind; ownerId: string }[];
   jobs: { jobType: string; occurrence: string; runAt: Date }[];
   effects: string[];
+  refundPreviousStatus: string[];
   service: ReturnType<typeof createRaffleLifecycleService<null>>;
 }
 
-function harness(input: RaffleInput, status: Raffle["status"]): Harness {
+function harness(
+  input: RaffleInput,
+  status: Raffle["status"],
+  opts: { creationFeePaid?: boolean } = {},
+): Harness {
   const raffle: Raffle = {
     ...input,
     id: "r1",
@@ -132,6 +137,7 @@ function harness(input: RaffleInput, status: Raffle["status"]): Harness {
     notices: [] as Harness["notices"],
     jobs: [] as Harness["jobs"],
     effects: [] as string[],
+    refundPreviousStatus: [] as string[],
   };
   const repo: LifecycleRepository<null> = {
     transaction: (fn) => fn(null),
@@ -153,7 +159,15 @@ function harness(input: RaffleInput, status: Raffle["status"]): Harness {
       releaseUnpaidReservations: async () => void h.effects.push("release"),
       cancelTickets: async () => void h.effects.push("cancel_tickets"),
     },
-    refunds: { startRefunds: async () => void h.effects.push("refunds") },
+    refunds: {
+      startRefunds: async (_t, _id, _at, ctx) => {
+        h.effects.push("refunds");
+        h.refundPreviousStatus.push(ctx?.previousStatus ?? "none");
+      },
+    },
+    ...(opts.creationFeePaid === undefined
+      ? {}
+      : { creationFee: { isCreationFeePaid: async () => opts.creationFeePaid === true } }),
     notifier: {
       notifyOwner: async (ownerId, _r, kind) => void h.notices.push({ kind, ownerId }),
     },
@@ -188,6 +202,24 @@ describe("publication", () => {
     const other = harness(baseInput(), "draft");
     const o = await other.service.submitForPublication("someone", "r1");
     expect(!o.ok && o.error.kind).toBe("forbidden");
+  });
+  it("requires a paid Creation_Fee to submit when the fee gate is configured", async () => {
+    const unpaid = harness(baseInput(), "draft", { creationFeePaid: false });
+    const r = await unpaid.service.submitForPublication("owner", "r1");
+    expect(!r.ok && r.error).toEqual({
+      kind: "invalid",
+      errors: [expect.objectContaining({ field: "creationFee", code: "unpaid" })],
+    });
+    expect(unpaid.raffles.get("r1")?.status).toBe("draft");
+    const paid = harness(baseInput(), "draft", { creationFeePaid: true });
+    const p = await paid.service.submitForPublication("owner", "r1");
+    expect(p.ok && p.value.status).toBe("pending_review");
+  });
+  it("passes the pre-cancellation status to refunds (Creation_Fee refund from draft)", async () => {
+    const h = harness(baseInput(), "draft");
+    const r = await h.service.cancel("r1", { id: "owner", role: "owner" }, "changed my mind");
+    expect(r.ok && r.value).toBe("cancelled");
+    expect(h.refundPreviousStatus).toEqual(["draft"]);
   });
   it("returns to draft and notifies the owner on failure, keeping data", async () => {
     const h = harness(baseInput(), "pending_review");

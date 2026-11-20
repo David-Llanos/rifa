@@ -43,8 +43,22 @@ export interface InventoryEffects<Tx> {
 
 /** Implemented by the payment module (task 7.x). */
 export interface RefundEffects<Tx> {
-  /** Enqueues refunds of every sold ticket payment; must start them within 24 hours (Req 8.2). */
-  startRefunds(tx: Tx, raffleId: string, cancelledAt: Date): Promise<void>;
+  /**
+   * Enqueues refunds of every sold ticket payment; must start them within 24 hours (Req 8.2).
+   * `previousStatus` is the status before cancellation: from `draft`, the Creation_Fee is refunded (Req 3.9).
+   */
+  startRefunds(
+    tx: Tx,
+    raffleId: string,
+    cancelledAt: Date,
+    context?: { previousStatus: RaffleStatus },
+  ): Promise<void>;
+}
+
+/** Implemented by the payment module's fee service (task 7.4). */
+export interface CreationFeeGate<Tx> {
+  /** A draft can be submitted only after its Creation_Fee is paid (Requirements 3.2, 3.3). */
+  isCreationFeePaid(tx: Tx, raffleId: string): Promise<boolean>;
 }
 
 export type OwnerNoticeKind =
@@ -102,6 +116,8 @@ export interface LifecycleDeps<Tx> {
   jobs: JobScheduling;
   newId: () => string;
   clock?: Clock;
+  /** When set, submission is rejected until the Creation_Fee is paid. */
+  creationFee?: CreationFeeGate<Tx>;
 }
 
 export type ClosureStep = "none" | "sales_closed" | "awaiting_draw" | "cancelled";
@@ -197,7 +213,7 @@ export function createRaffleLifecycleService<Tx>(deps: LifecycleDeps<Tx>): Raffl
     ]);
     if (!moved.ok) return moved;
     await deps.inventory.cancelTickets(tx, raffle.id);
-    await deps.refunds.startRefunds(tx, raffle.id, now);
+    await deps.refunds.startRefunds(tx, raffle.id, now, { previousStatus: raffle.status });
     return moved;
   }
 
@@ -211,6 +227,13 @@ export function createRaffleLifecycleService<Tx>(deps: LifecycleDeps<Tx>): Raffl
         // Deadline must still be at least 24 hours away at submission (Requirement 2.7).
         const errors = validateRaffle(loaded.value, now);
         if (errors.length > 0) return err({ kind: "invalid", errors });
+        if (
+          loaded.value.status === "draft" &&
+          deps.creationFee &&
+          !(await deps.creationFee.isCreationFeePaid(tx, raffleId))
+        ) {
+          return err({ kind: "invalid", errors: [fieldError("creationFee", "unpaid")] });
+        }
         return move(tx, loaded.value, "submit", ownerId, now);
       });
       return result;

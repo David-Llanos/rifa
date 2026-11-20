@@ -174,7 +174,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 45: Export round trip**
     - **Validates: Requirements 4.5, 4.6, 17.7**
 
-- [ ] 6. Checkpoint - Ensure all tests pass
+- [x] 6. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 7. Payment service
