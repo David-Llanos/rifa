@@ -1,3 +1,12 @@
+import { holdAtDeadline } from "./confirmation-core.js";
+import type { OrderStatus, TicketState } from "./confirmation-core.js";
+import type {
+  ConfirmationRepository,
+  DeadlineReleaseResult,
+  LockedOrder,
+  ReleasedOrder,
+  ReleaseResult,
+} from "./confirmation-repository.js";
 import type { InventoryRepository, NewOrder } from "./repository.js";
 import type { InventoryRaffle, TicketCounts, TicketStatus } from "./types.js";
 
@@ -5,16 +14,19 @@ interface MemTicket {
   status: TicketStatus;
   orderId: string | null;
   expiresAt: Date | null;
+  soldAt?: Date | null;
 }
 
 interface MemOrder extends NewOrder {
-  status: "reserved" | "expired";
+  status: OrderStatus;
 }
 
 interface State {
   raffles: Map<string, InventoryRaffle>;
   tickets: Map<string, Map<number, MemTicket>>;
   orders: Map<string, MemOrder>;
+  /** Payment status per order (test stand-in for the payment table). */
+  payments: Map<string, "pending" | "succeeded" | "failed" | "expired">;
 }
 
 export interface MemoryTx {
@@ -30,6 +42,7 @@ function clone(s: State): State {
     raffles: new Map([...s.raffles].map(([k, v]) => [k, { ...v }])),
     tickets,
     orders: new Map([...s.orders].map(([k, v]) => [k, { ...v, numbers: [...v.numbers] }])),
+    payments: new Map(s.payments),
   };
 }
 
@@ -37,8 +50,15 @@ function clone(s: State): State {
  * In-memory repository with the same semantics as the PostgreSQL one: transactions are serialized (as the
  * row locks make them for the same tickets) and a throw restores the previous state.
  */
-export class MemoryInventoryRepository implements InventoryRepository<MemoryTx> {
-  private state: State = { raffles: new Map(), tickets: new Map(), orders: new Map() };
+export class MemoryInventoryRepository
+  implements InventoryRepository<MemoryTx>, ConfirmationRepository<MemoryTx>
+{
+  private state: State = {
+    raffles: new Map(),
+    tickets: new Map(),
+    orders: new Map(),
+    payments: new Map(),
+  };
   private tail: Promise<unknown> = Promise.resolve();
   private readonly tx: MemoryTx = { memory: true };
 
@@ -66,6 +86,140 @@ export class MemoryInventoryRepository implements InventoryRepository<MemoryTx> 
 
   orderCount(): number {
     return this.state.orders.size;
+  }
+
+  orderStatus(orderId: string): OrderStatus | undefined {
+    return this.state.orders.get(orderId)?.status;
+  }
+
+  /** Test helper: record a payment for an order. */
+  setPayment(orderId: string, status: "pending" | "succeeded" | "failed" | "expired"): void {
+    this.state.payments.set(orderId, status);
+  }
+
+  paymentStatus(orderId: string): string | undefined {
+    return this.state.payments.get(orderId);
+  }
+
+  lockOrder(_tx: MemoryTx, orderId: string): Promise<LockedOrder | null> {
+    const o = this.state.orders.get(orderId);
+    return Promise.resolve(
+      o
+        ? {
+            id: o.id,
+            raffleId: o.raffleId,
+            playerId: o.playerId,
+            numbers: [...o.numbers],
+            status: o.status,
+          }
+        : null,
+    );
+  }
+
+  lockTickets(_tx: MemoryTx, raffleId: string, numbers: number[]): Promise<TicketState[]> {
+    const out: TicketState[] = [];
+    for (const n of [...numbers].sort((a, b) => a - b)) {
+      const t = this.state.tickets.get(raffleId)?.get(n);
+      if (t) {
+        out.push({
+          number: n,
+          status: t.status,
+          orderId: t.orderId,
+          reservationExpiresAt: t.expiresAt,
+          soldAt: t.soldAt ?? null,
+        });
+      }
+    }
+    return Promise.resolve(out);
+  }
+
+  convertToSold(
+    _tx: MemoryTx,
+    raffleId: string,
+    orderId: string,
+    numbers: number[],
+    now: Date,
+  ): Promise<void> {
+    for (const n of numbers) {
+      const t = this.state.tickets.get(raffleId)?.get(n);
+      if (t) {
+        t.status = "sold";
+        t.orderId = orderId;
+        t.expiresAt = null;
+        t.soldAt ??= now;
+      }
+    }
+    return Promise.resolve();
+  }
+
+  setOrderStatus(_tx: MemoryTx, orderId: string, status: OrderStatus): Promise<void> {
+    const o = this.state.orders.get(orderId);
+    if (o) o.status = status;
+    return Promise.resolve();
+  }
+
+  releaseExpiredDetailed(_tx: MemoryTx, now: Date): Promise<ReleaseResult> {
+    return Promise.resolve(
+      this.releaseWhere((t) => t.expiresAt !== null && t.expiresAt.getTime() <= now.getTime()),
+    );
+  }
+
+  releaseAtDeadline(
+    _tx: MemoryTx,
+    raffleId: string,
+    now: Date,
+    graceMs: number,
+  ): Promise<DeadlineReleaseResult> {
+    const raffle = this.state.raffles.get(raffleId);
+    if (!raffle || raffle.deadline.getTime() > now.getTime()) {
+      return Promise.resolve({ tickets: 0, orders: [], heldOrders: 0 });
+    }
+    const out = this.releaseWhere(
+      (t) =>
+        !holdAtDeadline(
+          t.orderId !== null && this.state.payments.get(t.orderId) === "pending",
+          raffle.deadline,
+          now,
+          graceMs,
+        ),
+      raffleId,
+    );
+    const held = new Set<string>();
+    for (const t of this.state.tickets.get(raffleId)?.values() ?? [])
+      if (t.status === "reserved" && t.orderId) held.add(t.orderId);
+    return Promise.resolve({ ...out, heldOrders: held.size });
+  }
+
+  /** Releases reserved tickets matching `pick` and expires the orders left empty (with pending payments). */
+  private releaseWhere(pick: (t: MemTicket) => boolean, onlyRaffle?: string): ReleaseResult {
+    let tickets = 0;
+    const touched = new Set<string>();
+    for (const [rid, m] of this.state.tickets) {
+      if (onlyRaffle !== undefined && rid !== onlyRaffle) continue;
+      for (const t of m.values()) {
+        if (t.status === "reserved" && pick(t)) {
+          if (t.orderId) touched.add(t.orderId);
+          t.status = "available";
+          t.orderId = null;
+          t.expiresAt = null;
+          tickets++;
+        }
+      }
+    }
+    const orders: ReleasedOrder[] = [];
+    for (const id of touched) {
+      const o = this.state.orders.get(id);
+      if (!o || (o.status !== "reserved" && o.status !== "pending")) continue;
+      let holds = false;
+      for (const m of this.state.tickets.values())
+        for (const t of m.values()) if (t.orderId === id) holds = true;
+      if (holds) continue;
+      o.status = "expired";
+      const hadPendingPayment = this.state.payments.get(id) === "pending";
+      if (hadPendingPayment) this.state.payments.set(id, "expired");
+      orders.push({ orderId: id, raffleId: o.raffleId, playerId: o.playerId, hadPendingPayment });
+    }
+    return { tickets, orders };
   }
 
   transaction<T>(fn: (tx: MemoryTx) => Promise<T>): Promise<T> {

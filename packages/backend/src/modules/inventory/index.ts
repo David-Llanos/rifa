@@ -4,3 +4,7 @@ export * from "./repository.js";
 export * from "./service.js";
 export * from "./pg-repository.js";
 export * from "./memory-repository.js";
+export * from "./confirmation-core.js";
+export * from "./confirmation-repository.js";
+export * from "./confirmation.js";
+export * from "./expiry-jobs.js";
