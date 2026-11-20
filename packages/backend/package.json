@@ -10,6 +10,13 @@
   },
   "dependencies": {
     "@node-rs/argon2": "2.2.2",
-    "@raffle/shared": "0.1.0"
+    "@raffle/shared": "0.1.0",
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0",
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "@types/pngjs": "6.0.5",
+    "@types/qrcode": "1.5.5"
   }
 }
