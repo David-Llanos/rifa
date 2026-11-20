@@ -29,7 +29,9 @@ const isPlainObject = (v: unknown): v is Record<string, unknown> =>
 
 function hasExactKeys(v: Record<string, unknown>, keys: readonly string[]): boolean {
   const own = Object.keys(v);
-  return own.length === keys.length && keys.every((k) => Object.prototype.hasOwnProperty.call(v, k));
+  return (
+    own.length === keys.length && keys.every((k) => Object.prototype.hasOwnProperty.call(v, k))
+  );
 }
 
 /** `{ "COP": <int >= 0>, "USD": <int >= 0> }`, as stored in `platform_config` (JSON numbers). */

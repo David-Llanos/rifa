@@ -191,7 +191,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 15: Payment idempotency keys**
     - **Validates: Requirements 6.7**
 
-  - [ ] 7.4 Implement Creation_Fee and Customization_Fee payments
+  - [x] 7.4 Implement Creation_Fee and Customization_Fee payments
     - Fee configuration with change isolation, payment confirmation view totals, 30-second result, failure handling that keeps the raffle in draft
     - Per-option customization charges enabled only after success, receipts within 1 minute, full refund of Creation_Fee on pre-publication cancellation
     - _Requirements: 3.1, 3.2, 3.3, 3.5, 3.6, 3.7, 3.8, 3.9_

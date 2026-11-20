@@ -246,9 +246,8 @@ export class PgFeeRepository implements FeeRepository<SqlClient> {
   }
 
   async hasRefund(tx: SqlClient, paymentId: string): Promise<boolean> {
-    const r = (
-      await tx.query(`SELECT 1 FROM refund WHERE payment_id = $1 LIMIT 1`, [paymentId])
-    ).rows[0];
+    const r = (await tx.query(`SELECT 1 FROM refund WHERE payment_id = $1 LIMIT 1`, [paymentId]))
+      .rows[0];
     return r !== undefined;
   }
 }

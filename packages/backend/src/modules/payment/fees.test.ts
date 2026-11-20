@@ -41,9 +41,19 @@ class ScriptedAdapter implements PaymentProviderAdapter {
     const providerRef = `ref_${this.charges.length}`;
     switch (this.behavior) {
       case "succeed":
-        return Promise.resolve({ kind: "hosted_fields", providerRef, status: "succeeded", clientToken: "t" });
+        return Promise.resolve({
+          kind: "hosted_fields",
+          providerRef,
+          status: "succeeded",
+          clientToken: "t",
+        });
       case "pending":
-        return Promise.resolve({ kind: "redirect", providerRef, status: "pending", redirectUrl: "https://p.invalid/x" });
+        return Promise.resolve({
+          kind: "redirect",
+          providerRef,
+          status: "pending",
+          redirectUrl: "https://p.invalid/x",
+        });
       case "decline":
         return Promise.resolve({ kind: "declined", providerRef, reason: "insufficient_funds" });
       case "throw":
@@ -88,7 +98,10 @@ const raffle = (over: Partial<FeeRaffle> = {}): FeeRaffle => ({
   ...over,
 });
 
-function setup(over: Partial<FeeRaffle> = {}, opts: { country?: Country; noAdapter?: boolean } = {}) {
+function setup(
+  over: Partial<FeeRaffle> = {},
+  opts: { country?: Country; noAdapter?: boolean } = {},
+) {
   const repo = new MemoryFeeRepository();
   repo.addRaffle(raffle(over));
   const adapter = new ScriptedAdapter(opts.country ?? "US");
@@ -166,7 +179,11 @@ describe("confirmation view (Req 3.1, 3.4)", () => {
     await t.svc.selectCustomizations("owner-1", "r1", ["branding", "extra_prize_images"]);
     const v = await t.svc.confirmationView("owner-1", "r1");
     if (!v.ok) throw new Error(v.error.code);
-    expect(v.value.lines.map((l) => l.item)).toEqual(["creation_fee", "branding", "extra_prize_images"]);
+    expect(v.value.lines.map((l) => l.item)).toEqual([
+      "creation_fee",
+      "branding",
+      "extra_prize_images",
+    ]);
     expect(v.value.total).toEqual(usd(999 + 299 + 99));
     expect(v.value.providerAvailable).toBe(true);
   });
@@ -190,11 +207,20 @@ describe("Creation_Fee payment (Req 3.2, 3.3, 3.4, 3.7)", () => {
   it("charges the displayed amount, marks it paid and sends a receipt", async () => {
     const t = setup();
     const r = await t.svc.payFee("owner-1", "r1", "creation_fee", pay);
-    expect(r.ok && r.value).toMatchObject({ status: "succeeded", amount: usd(999), receiptSent: true });
+    expect(r.ok && r.value).toMatchObject({
+      status: "succeeded",
+      amount: usd(999),
+      receiptSent: true,
+    });
     expect(t.adapter.charges[0]?.amount).toEqual(usd(999));
     expect(t.repo.raffle("r1")?.creationFeePaid).toBe(true);
     expect(t.receipts).toEqual([
-      expect.objectContaining({ item: "creation_fee", amount: usd(999), paidAt: NOW, ownerId: "owner-1" }),
+      expect.objectContaining({
+        item: "creation_fee",
+        amount: usd(999),
+        paidAt: NOW,
+        ownerId: "owner-1",
+      }),
     ]);
   });
 
@@ -205,7 +231,10 @@ describe("Creation_Fee payment (Req 3.2, 3.3, 3.4, 3.7)", () => {
     expect(r.ok && r.value).toMatchObject({ status: "failed", reason: "insufficient_funds" });
     expect(t.repo.raffle("r1")).toMatchObject({ status: "draft", creationFeePaid: false });
     t.adapter.behavior = "succeed";
-    const retry = await t.svc.payFee("owner-1", "r1", "creation_fee", { ...pay, idempotencyKey: "k2" });
+    const retry = await t.svc.payFee("owner-1", "r1", "creation_fee", {
+      ...pay,
+      idempotencyKey: "k2",
+    });
     expect(retry.ok && retry.value.status).toBe("succeeded");
   });
 
@@ -245,12 +274,17 @@ describe("Creation_Fee payment (Req 3.2, 3.3, 3.4, 3.7)", () => {
 
   it("rejects a missing key, a paid fee and a non-draft raffle", async () => {
     const t = setup();
-    expect(await t.svc.payFee("owner-1", "r1", "creation_fee", { ...pay, idempotencyKey: " " })).toEqual({
+    expect(
+      await t.svc.payFee("owner-1", "r1", "creation_fee", { ...pay, idempotencyKey: " " }),
+    ).toEqual({
       ok: false,
       error: { code: "idempotency_key_required" },
     });
     await t.svc.payFee("owner-1", "r1", "creation_fee", pay);
-    const paid = await t.svc.payFee("owner-1", "r1", "creation_fee", { ...pay, idempotencyKey: "k9" });
+    const paid = await t.svc.payFee("owner-1", "r1", "creation_fee", {
+      ...pay,
+      idempotencyKey: "k9",
+    });
     expect(paid).toEqual({ ok: false, error: { code: "already_paid", item: "creation_fee" } });
     const pub = setup({ status: "published" });
     const r = await pub.svc.payFee("owner-1", "r1", "creation_fee", pay);
@@ -286,7 +320,10 @@ describe("pending payments and completion", () => {
     const t = setup();
     t.adapter.behavior = "pending";
     const first = await t.svc.payFee("owner-1", "r1", "creation_fee", pay);
-    const second = await t.svc.payFee("owner-1", "r1", "creation_fee", { ...pay, idempotencyKey: "k2" });
+    const second = await t.svc.payFee("owner-1", "r1", "creation_fee", {
+      ...pay,
+      idempotencyKey: "k2",
+    });
     if (!first.ok || !second.ok) throw new Error("payFee failed");
     await t.svc.completeFeePayment(first.value.paymentId, { status: "succeeded" });
     const dup = await t.svc.completeFeePayment(second.value.paymentId, { status: "succeeded" });
@@ -303,7 +340,9 @@ describe("fee changes (Req 3.8)", () => {
     t.adapter.behavior = "pending";
     const before = await t.svc.payFee("owner-1", "r1", "creation_fee", pay);
     t.config.creation = { COP: 1, USD: 5000 };
-    await t.svc.completeFeePayment(before.ok ? before.value.paymentId : "", { status: "succeeded" });
+    await t.svc.completeFeePayment(before.ok ? before.value.paymentId : "", {
+      status: "succeeded",
+    });
     expect(t.repo.payments()[0]?.amount).toEqual(usd(999));
 
     await t.svc.selectCustomizations("owner-1", "r1", ["branding"]);
@@ -326,9 +365,15 @@ describe("Customization_Fee payments (Req 3.5, 3.6)", () => {
   it("charges once per selected option and enables only paid options", async () => {
     const t = setup({ country: "CO", currency: "COP" }, { country: "CO" });
     await t.svc.selectCustomizations("owner-1", "r1", ["branding", "share_theme"]);
-    const ok1 = await t.svc.payFee("owner-1", "r1", "branding", { method: "pse", idempotencyKey: "a" });
+    const ok1 = await t.svc.payFee("owner-1", "r1", "branding", {
+      method: "pse",
+      idempotencyKey: "a",
+    });
     t.adapter.behavior = "decline";
-    const bad = await t.svc.payFee("owner-1", "r1", "share_theme", { method: "pse", idempotencyKey: "b" });
+    const bad = await t.svc.payFee("owner-1", "r1", "share_theme", {
+      method: "pse",
+      idempotencyKey: "b",
+    });
     expect(ok1.ok && ok1.value.amount).toEqual(money(500_000n, "COP"));
     expect(bad.ok && bad.value.status).toBe("failed");
     // The failed option stays selected but disabled.
@@ -336,7 +381,10 @@ describe("Customization_Fee payments (Req 3.5, 3.6)", () => {
       { option: "branding", enabled: true },
       { option: "share_theme", enabled: false },
     ]);
-    const twice = await t.svc.payFee("owner-1", "r1", "branding", { method: "pse", idempotencyKey: "c" });
+    const twice = await t.svc.payFee("owner-1", "r1", "branding", {
+      method: "pse",
+      idempotencyKey: "c",
+    });
     expect(twice).toEqual({ ok: false, error: { code: "already_paid", item: "branding" } });
   });
 
@@ -383,9 +431,9 @@ describe("Creation_Fee refund on cancellation (Req 3.9)", () => {
 
   it("does nothing after publication or without a paid fee", async () => {
     const t = setup();
-    expect(await t.repo.transaction((tx) => t.svc.refundCreationFeeOnCancel(tx, "r1", NOW, "draft"))).toBe(
-      false,
-    );
+    expect(
+      await t.repo.transaction((tx) => t.svc.refundCreationFeeOnCancel(tx, "r1", NOW, "draft")),
+    ).toBe(false);
     await t.svc.payFee("owner-1", "r1", "creation_fee", pay);
     expect(
       await t.repo.transaction((tx) => t.svc.refundCreationFeeOnCancel(tx, "r1", NOW, "published")),

@@ -208,7 +208,7 @@ describe("publication", () => {
     const r = await unpaid.service.submitForPublication("owner", "r1");
     expect(!r.ok && r.error).toEqual({
       kind: "invalid",
-      errors: [expect.objectContaining({ field: "creationFee", code: "unpaid" })],
+      errors: [expect.objectContaining({ field: "creationFee", constraint: "unpaid" })],
     });
     expect(unpaid.raffles.get("r1")?.status).toBe("draft");
     const paid = harness(baseInput(), "draft", { creationFeePaid: true });

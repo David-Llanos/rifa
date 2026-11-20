@@ -1,7 +1,12 @@
 import { err, ok, systemClock } from "@raffle/shared";
 import type { Clock, Country, Currency, Money, Result } from "@raffle/shared";
 import type { RaffleStatus } from "../raffle/types.js";
-import { IDEMPOTENCY_WINDOW_MS, methodsFor, selectProvider, validateIdempotencyKey } from "./core.js";
+import {
+  IDEMPOTENCY_WINDOW_MS,
+  methodsFor,
+  selectProvider,
+  validateIdempotencyKey,
+} from "./core.js";
 import { feeFor, isCustomizationOption, parseFeeSchedule, quoteFees } from "./fees.js";
 import type { CustomizationOption, FeeItem, FeeQuote } from "./fees.js";
 import type {
@@ -223,8 +228,6 @@ class FeeRejection extends Error {
   }
 }
 
-class ChargeTimeout extends Error {}
-
 function outcomeOf(p: FeePayment, replayed: boolean): FeePaymentOutcome {
   const base = { paymentId: p.id, amount: p.amount, replayed };
   switch (p.status) {
@@ -438,7 +441,15 @@ export function createFeeService<Tx>(deps: FeeServiceDeps<Tx>): FeeService<Tx> {
       if (!key.ok) return err({ code: "idempotency_key_required" });
       const now = clock.now();
 
-      const started = await run(async (tx) => {
+      type Started =
+        | { kind: "replay"; outcome: FeePaymentOutcome }
+        | {
+            kind: "charge";
+            payment: FeePayment;
+            adapter: PaymentProviderAdapter;
+            country: Country;
+          };
+      const started = await run(async (tx): Promise<Started> => {
         // Lock first: concurrent requests for this raffle (including same-key retries) serialize here.
         const raffle = await ownedRaffle(tx, ownerId, raffleId);
         // A repeated key within 24 hours returns the original result without a new charge.
@@ -451,7 +462,7 @@ export function createFeeService<Tx>(deps: FeeServiceDeps<Tx>): FeeService<Tx> {
           if (prior.raffleId !== raffleId || prior.item !== item || prior.ownerId !== ownerId) {
             throw new FeeRejection({ code: "idempotency_key_conflict" });
           }
-          return { replay: outcomeOf(prior, true) } as const;
+          return { kind: "replay", outcome: outcomeOf(prior, true) };
         }
         assertPayable(raffle, item);
         // No provider: nothing is charged and the raffle stays as it is (Requirement 3.4).
@@ -474,10 +485,10 @@ export function createFeeService<Tx>(deps: FeeServiceDeps<Tx>): FeeService<Tx> {
           createdAt: now,
         };
         await repo.insertPayment(tx, payment);
-        return { payment, adapter: provider.value, country: raffle.country } as const;
+        return { kind: "charge", payment, adapter: provider.value, country: raffle.country };
       });
       if (!started.ok) return started;
-      if ("replay" in started.value) return ok(started.value.replay);
+      if (started.value.kind === "replay") return ok(started.value.outcome);
 
       const { payment, adapter, country } = started.value;
       const result = await charge(adapter, payment, country, input.returnUrl);
