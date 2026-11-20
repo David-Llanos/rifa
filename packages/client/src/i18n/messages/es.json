@@ -17,6 +17,7 @@
   "pwa.offline.banner": "Sin conexión. Las compras requieren conexión.",
   "pwa.offline.purchaseBlocked": "Se requiere conexión para comprar boletos. Tu selección se conservó.",
   "pwa.staleCounts": "Los conteos de boletos pueden estar desactualizados.",
+  "tickets.export.failed": "La exportación de boletos falló. No se modificó ningún dato de boletos. Inténtalo de nuevo.",
   "pwa.update.message": "Hay una nueva versión disponible.",
   "pwa.update.refresh": "Actualizar",
   "pwa.push.enable": "Activar notificaciones push",

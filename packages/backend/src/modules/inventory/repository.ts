@@ -1,4 +1,4 @@
-import type { InventoryRaffle, TicketCounts } from "./types.js";
+import type { InventoryRaffle, TicketCounts, TicketListRow } from "./types.js";
 
 export interface NewOrder {
   id: string;
@@ -39,6 +39,8 @@ export interface InventoryRepository<Tx> {
   /** Sets every ticket of the raffle to cancelled (raffle cancellation, Req 8.6); returns the count changed. */
   cancelAll(tx: Tx, raffleId: string): Promise<number>;
   counts(tx: Tx, raffleId: string): Promise<TicketCounts>;
+  /** Every ticket of the raffle ordered by number, with buyer name and purchase time for sold ones. */
+  listTickets(tx: Tx, raffleId: string): Promise<TicketListRow[]>;
   /** Creates tickets 1..total as available (idempotent). Returns the number inserted. */
   seedTickets(tx: Tx, raffleId: string, total: number): Promise<number>;
 }

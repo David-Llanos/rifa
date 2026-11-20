@@ -27,6 +27,14 @@ export interface Reservation {
   expiresAt: Date;
 }
 
+/** One row of the Owner's ticket list and CSV export (Req 4.5, 4.6). Buyer fields are set only for Sold. */
+export interface TicketListRow {
+  number: number;
+  status: TicketStatus;
+  buyerName: string | null;
+  purchasedAt: Date | null;
+}
+
 /** Maximum Tickets per checkout (Requirement 5.1). */
 export const MAX_TICKETS_PER_CHECKOUT = 100;
 

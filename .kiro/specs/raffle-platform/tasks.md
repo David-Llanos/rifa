@@ -165,7 +165,7 @@ The implementation language is TypeScript (Node.js backend, Next.js PWA front en
     - **Property 16: Asynchronous reservation expiry cap**
     - **Validates: Requirements 6.8**
 
-  - [ ] 5.10 Implement realtime counts, ticket list, and CSV export
+  - [x] 5.10 Implement realtime counts, ticket list, and CSV export
     - Redis pub/sub to server-sent events for counts, ticket list with buyer and purchase time, CSV export with 30-second limit and failure handling
     - CSV serializer and parser handling commas, quotes and newlines
     - _Requirements: 4.3, 4.5, 4.6, 4.7, 4.8_

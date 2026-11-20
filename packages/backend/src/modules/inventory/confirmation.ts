@@ -49,6 +49,8 @@ export interface ConfirmationServiceDeps<Tx> {
   clock?: Clock;
   /** Grace for in-progress payments at the deadline; defaults to 15 minutes. */
   deadlineGraceMs?: number;
+  /** Called after a committed ticket status change, e.g. `CountsPublisher.changed` (Req 4.3). */
+  countsChanged?: (raffleId: string) => void;
 }
 
 export interface ConfirmationService {
@@ -80,6 +82,17 @@ export function createConfirmationService<Tx>(
     return failures;
   }
 
+  /** Runs after commit; realtime is best effort and must not fail the committed operation. */
+  function changed(raffleIds: Iterable<string>): void {
+    for (const id of new Set(raffleIds)) {
+      try {
+        deps.countsChanged?.(id);
+      } catch {
+        // Clients flag stale counts (Req 4.8).
+      }
+    }
+  }
+
   return {
     async confirmPayment(c) {
       const now = clock.now();
@@ -102,6 +115,7 @@ export function createConfirmationService<Tx>(
         return { order, effect, previous: order.status };
       });
       if (!result) return { effect: "not_found", orderId: c.orderId };
+      if (result.effect === "sold") changed([result.order.raffleId]);
       // The refund call is external, so it runs after commit. A redelivery for an order already marked
       // refunded repeats the (idempotent) request, which recovers a refund that failed after commit.
       if (
@@ -120,6 +134,7 @@ export function createConfirmationService<Tx>(
 
     async releaseExpired(now = clock.now()) {
       const released = await repo.transaction((tx) => repo.releaseExpiredDetailed(tx, now));
+      changed(released.orders.map((o) => o.raffleId));
       return { ...released, notifyFailures: await notify(released.orders) };
     },
 
@@ -127,6 +142,7 @@ export function createConfirmationService<Tx>(
       const released = await repo.transaction((tx) =>
         repo.releaseAtDeadline(tx, raffleId, now, graceMs),
       );
+      if (released.tickets > 0) changed([raffleId]);
       return { ...released, notifyFailures: await notify(released.orders) };
     },
   };

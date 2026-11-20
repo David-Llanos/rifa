@@ -8,7 +8,7 @@ import type {
   LockedOrder,
   ReleaseResult,
 } from "./confirmation-repository.js";
-import type { InventoryRaffle, TicketCounts, TicketStatus } from "./types.js";
+import type { InventoryRaffle, TicketCounts, TicketListRow, TicketStatus } from "./types.js";
 
 /** A pooled connection that can be released after the transaction. */
 export interface PooledClient extends SqlClient {
@@ -291,6 +291,26 @@ export class PgInventoryRepository
       if (s in out) out[s] = Number(r["n"]);
     }
     return out;
+  }
+
+  async listTickets(tx: SqlClient, raffleId: string): Promise<TicketListRow[]> {
+    const res = await tx.query(
+      `SELECT t.number, t.status,
+              CASE WHEN t.status = 'sold' THEN u.display_name END AS buyer_name,
+              CASE WHEN t.status = 'sold' THEN t.sold_at END AS sold_at
+       FROM ticket t
+       LEFT JOIN "order" o ON o.id = t.order_id
+       LEFT JOIN "user" u ON u.id = o.player_id
+       WHERE t.raffle_id = $1
+       ORDER BY t.number`,
+      [raffleId],
+    );
+    return res.rows.map((r) => ({
+      number: Number(r["number"]),
+      status: String(r["status"]) as TicketStatus,
+      buyerName: r["buyer_name"] == null ? null : String(r["buyer_name"]),
+      purchasedAt: r["sold_at"] == null ? null : new Date(r["sold_at"] as string | Date),
+    }));
   }
 
   async seedTickets(tx: SqlClient, raffleId: string, total: number): Promise<number> {

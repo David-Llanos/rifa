@@ -8,7 +8,7 @@ import type {
   ReleaseResult,
 } from "./confirmation-repository.js";
 import type { InventoryRepository, NewOrder } from "./repository.js";
-import type { InventoryRaffle, TicketCounts, TicketStatus } from "./types.js";
+import type { InventoryRaffle, TicketCounts, TicketListRow, TicketStatus } from "./types.js";
 
 interface MemTicket {
   status: TicketStatus;
@@ -61,6 +61,12 @@ export class MemoryInventoryRepository
   };
   private tail: Promise<unknown> = Promise.resolve();
   private readonly tx: MemoryTx = { memory: true };
+  /** Player display names (stand-in for "user".display_name). */
+  private readonly names = new Map<string, string>();
+
+  setDisplayName(playerId: string, name: string): void {
+    this.names.set(playerId, name);
+  }
 
   addRaffle(id: string, raffle: InventoryRaffle): void {
     this.state.raffles.set(id, { ...raffle });
@@ -339,6 +345,21 @@ export class MemoryInventoryRepository
     const out: TicketCounts = { available: 0, reserved: 0, sold: 0, cancelled: 0 };
     for (const t of this.state.tickets.get(raffleId)?.values() ?? []) out[t.status]++;
     return Promise.resolve(out);
+  }
+
+  listTickets(_tx: MemoryTx, raffleId: string): Promise<TicketListRow[]> {
+    const rows: TicketListRow[] = [];
+    for (const [number, t] of this.state.tickets.get(raffleId) ?? []) {
+      const sold = t.status === "sold";
+      const playerId = sold && t.orderId ? this.state.orders.get(t.orderId)?.playerId : undefined;
+      rows.push({
+        number,
+        status: t.status,
+        buyerName: playerId === undefined ? null : (this.names.get(playerId) ?? null),
+        purchasedAt: sold ? (t.soldAt ?? null) : null,
+      });
+    }
+    return Promise.resolve(rows.sort((a, b) => a.number - b.number));
   }
 
   seedTickets(_tx: MemoryTx, raffleId: string, total: number): Promise<number> {

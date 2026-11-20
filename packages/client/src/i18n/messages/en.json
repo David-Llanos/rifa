@@ -17,6 +17,7 @@
   "pwa.offline.banner": "You are offline. Purchases require a connection.",
   "pwa.offline.purchaseBlocked": "A connection is required to buy tickets. Your selection has been kept.",
   "pwa.staleCounts": "Ticket counts may be outdated.",
+  "tickets.export.failed": "The ticket export failed. No ticket data was changed. Try again.",
   "pwa.update.message": "A new version is available.",
   "pwa.update.refresh": "Refresh",
   "pwa.push.enable": "Enable push notifications",

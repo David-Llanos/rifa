@@ -23,6 +23,8 @@ export interface InventoryServiceDeps<Tx> {
   clock?: Clock;
   /** Reservation_Timeout in milliseconds; defaults to 10 minutes. */
   reservationTimeoutMs?: number;
+  /** Called after a committed ticket status change, e.g. `CountsPublisher.changed` (Req 4.3). */
+  countsChanged?: (raffleId: string) => void;
 }
 
 export interface InventoryService<Tx> {
@@ -38,7 +40,10 @@ export interface InventoryService<Tx> {
     playerId: string,
     qty: number,
   ): Promise<Result<Reservation, InventoryError>>;
-  /** Releases reservations that expired at or before `now`; returns the number of tickets released (Req 5.6). */
+  /**
+   * Releases reservations that expired at or before `now`; returns the number of tickets released (Req 5.6).
+   * Does not publish counts; the expiry jobs use `ConfirmationService.releaseExpired`, which does.
+   */
   releaseExpired(now?: Date): Promise<number>;
   counts(raffleId: string): Promise<TicketCounts>;
   /** Sets all tickets to cancelled. Pass `tx` to join the raffle-cancellation transaction (Req 8.6). */
@@ -81,11 +86,22 @@ export function createInventoryService<Tx>(deps: InventoryServiceDeps<Tx>): Inve
     return raffle;
   }
 
+  /** Runs after commit; a failing listener must not fail the committed operation. */
+  function changed(raffleId: string): void {
+    try {
+      deps.countsChanged?.(raffleId);
+    } catch {
+      // Realtime is best effort; clients flag stale counts (Req 4.8).
+    }
+  }
+
   async function run(
     fn: (tx: Tx) => Promise<Reservation>,
   ): Promise<Result<Reservation, InventoryError>> {
     try {
-      return ok(await repo.transaction(fn));
+      const reservation = await repo.transaction(fn);
+      changed(reservation.raffleId);
+      return ok(reservation);
     } catch (e) {
       if (e instanceof Rejection) return err(e.error);
       throw e;
@@ -158,16 +174,19 @@ export function createInventoryService<Tx>(deps: InventoryServiceDeps<Tx>): Inve
       return repo.transaction((tx) => repo.counts(tx, raffleId));
     },
 
-    cancelRaffleTickets(raffleId, tx) {
-      return tx
-        ? repo.cancelAll(tx, raffleId)
-        : repo.transaction((t) => repo.cancelAll(t, raffleId));
+    // With a caller-owned `tx` the change is not committed yet, so the caller publishes after commit.
+    async cancelRaffleTickets(raffleId, tx) {
+      if (tx) return repo.cancelAll(tx, raffleId);
+      const n = await repo.transaction((t) => repo.cancelAll(t, raffleId));
+      if (n > 0) changed(raffleId);
+      return n;
     },
 
-    createTickets(raffleId, total, tx) {
-      return tx
-        ? repo.seedTickets(tx, raffleId, total)
-        : repo.transaction((t) => repo.seedTickets(t, raffleId, total));
+    async createTickets(raffleId, total, tx) {
+      if (tx) return repo.seedTickets(tx, raffleId, total);
+      const n = await repo.transaction((t) => repo.seedTickets(t, raffleId, total));
+      if (n > 0) changed(raffleId);
+      return n;
     },
   };
 }
